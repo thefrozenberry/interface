@@ -80,6 +80,35 @@ function CheckStatusContent() {
     }
   }, [paymentId, merchantOrderId, orderId, urlError]);
 
+  // Countdown and redirect effect
+  useEffect(() => {
+    if (paymentStatus && !isLoading && !error) {
+      let countdown = 5;
+      const countdownElement = document.getElementById('countdown');
+      const progressBar = document.getElementById('progress-bar');
+      
+      const timer = setInterval(() => {
+        countdown--;
+        
+        if (countdownElement) {
+          countdownElement.textContent = countdown.toString();
+        }
+        
+        if (progressBar) {
+          const progress = (countdown / 5) * 100;
+          progressBar.style.width = `${progress}%`;
+        }
+        
+        if (countdown <= 0) {
+          clearInterval(timer);
+          router.push('/dashboard');
+        }
+      }, 1000);
+      
+      return () => clearInterval(timer);
+    }
+  }, [paymentStatus, isLoading, error, router]);
+
   const checkPaymentStatus = async (paymentId: string) => {
     try {
       setIsLoading(true);
@@ -384,8 +413,8 @@ function CheckStatusContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="max-w-md w-full mx-4">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
           <div className="flex flex-col items-center text-center">
@@ -436,97 +465,16 @@ function CheckStatusContent() {
           </div>
         </div>
 
-        {/* User and Batch Information */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">User & Batch Information</h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* User Information */}
-            <div>
-              <h3 className="font-medium text-gray-900 mb-3">User Details</h3>
-              <div className="space-y-2">
-                <div>
-                  <span className="text-sm text-gray-600">Name:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.user?.name || 'Not available'}</p>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Email:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.user?.email || 'Not available'}</p>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Phone:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.user?.phone || 'Not provided'}</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Batch Information */}
-            <div>
-              <h3 className="font-medium text-gray-900 mb-3">Batch Details</h3>
-              <div className="space-y-2">
-                <div>
-                  <span className="text-sm text-gray-600">Batch Name:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.batch?.name || 'Not available'}</p>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Duration:</span>
-                  <p className="font-medium text-gray-900">
-                    {paymentStatus.batch?.startDate && paymentStatus.batch?.endDate 
-                      ? `${new Date(paymentStatus.batch.startDate).toLocaleDateString()} - ${new Date(paymentStatus.batch.endDate).toLocaleDateString()}`
-                      : 'Duration not specified'
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
+        {/* Redirect Animation */}
         <div className="bg-white rounded-xl shadow-lg p-8">
-          <div className="flex flex-col sm:flex-row gap-3">
-            {paymentStatus.status === 'success' && paymentStatus.receiptUrl && (
-              <button
-                onClick={handleDownloadReceipt}
-                className="flex-1 flex items-center justify-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                <FiDownload className="w-4 h-4 mr-2" />
-                Download Receipt
-              </button>
-            )}
-            
-            {paymentStatus.status === 'success' && (
-              <button
-                onClick={() => setShowReceipt(true)}
-                className="flex-1 flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <FiCheckCircle className="w-4 h-4 mr-2" />
-                View Receipt
-              </button>
-            )}
-            
-            <button
-              onClick={handleGoToDashboard}
-              className="flex-1 flex items-center justify-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              <FiArrowLeft className="w-4 h-4 mr-2" />
-              Go to Dashboard
-            </button>
+          <div className="flex flex-col items-center text-center">
+            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Redirecting to Dashboard</h3>
+            <p className="text-sm text-gray-600 mb-4">You will be redirected in <span className="font-semibold text-blue-600" id="countdown">5</span> seconds</p>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-linear" id="progress-bar" style={{ width: '100%' }}></div>
+            </div>
           </div>
-          
-          {paymentStatus.status === 'failed' || paymentStatus.status === 'rejected' ? (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-700">
-                Your payment was not successful. Please try again or contact support if the issue persists.
-              </p>
-            </div>
-          ) : paymentStatus.status === 'pending' ? (
-            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-sm text-yellow-700">
-                Your payment is being processed. Please wait a few minutes and refresh this page to check the updated status.
-              </p>
-            </div>
-          ) : null}
         </div>
       </div>
 

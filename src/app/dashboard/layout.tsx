@@ -113,7 +113,7 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-white">
       {/* Top Navigation - Fixed Position */}
       <header className="bg-white border-b border-gray-100 fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center justify-between h-16 px-6 lg:px-10 max-w-[1600px] mx-auto">
+        <div className="flex items-center justify-between h-16 px-4 md:px-6 lg:px-10 w-full max-w-[1600px] mx-auto">
           <div className="flex items-center">
             {/* Mobile menu button */}
             <button
@@ -160,7 +160,7 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      <div className="flex pt-16">
+      <div className="flex pt-16 min-h-screen">
         {/* Mobile Sidebar Overlay */}
         {isMobileMenuOpen && (
           <div 
@@ -170,18 +170,20 @@ export default function DashboardLayout({
         )}
 
         {/* Sidebar - Fixed on desktop, overlay on mobile */}
-        <div className={`fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 transform transition-transform duration-300 ease-in-out ${
+        <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 transform transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 md:relative md:top-0`}>
+        } md:translate-x-0 md:relative md:top-0 md:flex-shrink-0`}>
           <DashboardNav onMobileClose={() => setIsMobileMenuOpen(false)} />
-        </div>
+        </aside>
 
         {/* Main Content */}
-        <div className="flex-1 md:ml-64">
-          <main className="p-6 lg:p-10 bg-white m-4 rounded-xl border border-gray-100 min-h-[calc(100vh-8rem)]">
-            {children}
-          </main>
-        </div>
+        <main className="flex-1 w-full md:w-auto md:ml-0">
+          <div className="p-4 md:p-6 lg:p-10">
+            <div className="bg-white rounded-xl border border-gray-100 min-h-[calc(100vh-8rem)]">
+              {children}
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
