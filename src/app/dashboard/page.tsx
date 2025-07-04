@@ -591,11 +591,11 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Welcome back, {userProfile?.firstName || "User"}</h1>
         </div>
         
-        <div className="mt-4 md:mt-0 flex items-center gap-4">
+        <div className="mt-4 md:mt-0 flex flex-col md:flex-row items-stretch md:items-center gap-4">
           {/* Payment Status Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             {userProfile?.paymentStatus ? (
-              <div className="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-md">
+              <div className="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-md w-full md:w-auto justify-center">
                 <FiCheck className="h-4 w-4 text-green-600" />
                 <span className="text-sm font-medium text-green-700">Payment Approved</span>
               </div>
@@ -603,7 +603,7 @@ export default function Dashboard() {
               <button
                 onClick={handlePaymentClick}
                 disabled={!userProfile?.batchId}
-                className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium transition-colors ${
+                className={`w-full md:w-auto flex items-center justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium transition-colors ${
                   userProfile?.batchId
                     ? 'text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                     : 'text-gray-400 bg-gray-300 cursor-not-allowed'
@@ -615,15 +615,12 @@ export default function Dashboard() {
             )}
           </div>
           
-          {/* Vertical Border */}
-          <div className="hidden md:block w-px h-8 bg-gray-300"></div>
-          
           {/* Check In/Out Buttons */}
-          <div className="flex gap-3">
+          <div className="grid grid-cols-2 md:flex gap-3">
             <button 
               onClick={() => handleCheckIn()}
               disabled={isCheckingIn || isCheckingOut || !userProfile?.batchId || !userProfile?.paymentStatus}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full md:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               title={
                 !userProfile?.batchId ? "You need to be assigned to a batch to check in" :
                 !userProfile?.paymentStatus ? "You need to complete payment before checking in" :
@@ -645,7 +642,7 @@ export default function Dashboard() {
             <button 
               onClick={() => handleCheckOut()}
               disabled={isCheckingIn || isCheckingOut || !userProfile?.batchId || !userProfile?.paymentStatus}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full md:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
               title={
                 !userProfile?.batchId ? "You need to be assigned to a batch to check out" :
                 !userProfile?.paymentStatus ? "You need to complete payment before checking out" :
