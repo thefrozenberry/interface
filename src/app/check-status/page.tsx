@@ -56,7 +56,7 @@ function CheckStatusContent() {
     if (paymentId) {
       checkPaymentStatus(paymentId);
     } else {
-      setError("Payment ID is required to check status");
+      setError("Payment ID is required to check status. Please ensure you have a valid payment link.");
       setIsLoading(false);
     }
   }, [paymentId]);
@@ -202,6 +202,11 @@ function CheckStatusContent() {
             <p className="mt-2 text-sm text-gray-600 text-center">
               Please wait while we verify your payment...
             </p>
+            {paymentId && (
+              <p className="mt-2 text-xs text-gray-500 text-center">
+                Payment ID: {paymentId}
+              </p>
+            )}
           </div>
         </div>
       </div>
