@@ -77,6 +77,21 @@ export default function DashboardLayout({
     }
   }, [router]);
   
+  // Add keyboard event listener for mobile menu
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
+  
   // Show loading spinner while checking authentication
   if (isLoading) {
     return (
@@ -103,13 +118,16 @@ export default function DashboardLayout({
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 mr-3"
+              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 mr-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-105 active:scale-95 relative"
+              aria-label="Toggle navigation menu"
             >
               {isMobileMenuOpen ? (
-                <FiX className="h-5 w-5" />
+                <FiX className="h-5 w-5 transition-transform duration-200" />
               ) : (
-                <FiMenu className="h-5 w-5" />
+                <FiMenu className="h-5 w-5 transition-transform duration-200" />
               )}
+              {/* Mobile indicator dot */}
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full md:hidden"></div>
             </button>
             
             <Link href="/" className="flex items-center">
@@ -154,7 +172,7 @@ export default function DashboardLayout({
         {/* Sidebar - Fixed on desktop, overlay on mobile */}
         <div className={`fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 transform transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0`}>
+        } md:translate-x-0 md:relative md:top-0`}>
           <DashboardNav onMobileClose={() => setIsMobileMenuOpen(false)} />
         </div>
 

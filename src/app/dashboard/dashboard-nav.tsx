@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FiHome, FiUser, FiCreditCard, FiSettings, FiLogOut, FiCalendar } from "react-icons/fi";
+import { FiHome, FiUser, FiCreditCard, FiSettings, FiLogOut, FiCalendar, FiX } from "react-icons/fi";
 
 interface DashboardNavProps {
   onMobileClose?: () => void;
@@ -69,7 +69,19 @@ export function DashboardNav({ onMobileClose }: DashboardNavProps) {
   };
 
   return (
-    <nav className="w-64 bg-white border-r border-gray-100 hidden md:block h-full overflow-y-auto">
+    <nav className="w-64 bg-white border-r border-gray-100 h-full overflow-y-auto">
+      {/* Mobile Header */}
+      <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900">Menu</h3>
+        <button
+          onClick={onMobileClose}
+          className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+          aria-label="Close menu"
+        >
+          <FiX className="h-5 w-5" />
+        </button>
+      </div>
+      
       <div className="py-8 px-5">
         <div className="mb-8">
           <h2 className="text-xs uppercase tracking-wider text-gray-400 font-semibold ml-2 mb-3">Main Menu</h2>
@@ -82,7 +94,7 @@ export function DashboardNav({ onMobileClose }: DashboardNavProps) {
                   key={item.name}
                   href={item.href}
                   onClick={onMobileClose}
-                  className={`flex items-center px-4 py-3 text-sm rounded-lg transition-all duration-200 ${
+                  className={`flex items-center px-4 py-4 md:py-3 text-sm rounded-lg transition-all duration-200 ${
                     isActive
                       ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium"
                       : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
@@ -105,7 +117,7 @@ export function DashboardNav({ onMobileClose }: DashboardNavProps) {
           <h2 className="text-xs uppercase tracking-wider text-gray-400 font-semibold ml-2 mb-3">Account</h2>
           <button
             onClick={handleLogout}
-            className="flex items-center w-full px-4 py-3 text-sm rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
+            className="flex items-center w-full px-4 py-4 md:py-3 text-sm rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
           >
             <span className="mr-3 text-gray-400">
               <FiLogOut className="h-4 w-4" />

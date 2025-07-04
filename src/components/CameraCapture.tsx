@@ -5,14 +5,16 @@ interface CameraCaptureProps {
   onCapture: (photoData: string) => void;
   onClose: () => void;
   mode: 'checkin' | 'checkout';
+  isUploading?: boolean;
 }
 
-const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode }) => {
+const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode, isUploading = false }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     startCamera();
@@ -22,6 +24,16 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode 
       }
     };
   }, []);
+
+  // Show success animation when upload completes
+  useEffect(() => {
+    if (!isUploading && showSuccess) {
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isUploading, showSuccess]);
 
   const startCamera = async () => {
     try {
@@ -89,6 +101,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode 
         
         // Call the capture callback
         onCapture(photoData);
+        setShowSuccess(true);
       }
     }
   };
@@ -126,7 +139,15 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode 
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+    <>
+      <style jsx>{`
+        @keyframes progressShimmer {
+          0% { opacity: 0.7; }
+          50% { opacity: 1; }
+          100% { opacity: 0.7; }
+        }
+      `}</style>
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg overflow-hidden max-w-md mx-4">
         {/* Header */}
         <div className="bg-gray-50 px-4 py-3 border-b">
@@ -144,7 +165,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode 
         </div>
 
         {/* Camera View */}
-        <div className="relative">
+        <div className={`relative transition-all duration-300 ${isUploading ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}`}>
           {isLoading && (
             <div className="absolute inset-0 bg-gray-900 flex items-center justify-center">
               <div className="text-white text-center">
@@ -154,16 +175,78 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode 
             </div>
           )}
           
+          {isUploading && (
+            <div className="absolute inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-10">
+              <div className="text-white text-center">
+                <div className="relative mb-6">
+                  {/* Main spinning loader */}
+                  <div className="w-20 h-20 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                  {/* Pulsing ring effect */}
+                  <div className="absolute inset-0 w-20 h-20 border-4 border-blue-200 rounded-full animate-ping opacity-50"></div>
+                  {/* Inner pulsing ring */}
+                  <div className="absolute inset-2 w-16 h-16 border-2 border-blue-300 rounded-full animate-ping opacity-30" style={{ animationDelay: '0.5s' }}></div>
+                </div>
+                
+                <div className="space-y-3">
+                  <p className="text-xl font-semibold">Processing {mode === 'checkin' ? 'Check-in' : 'Check-out'}...</p>
+                  <p className="text-sm text-gray-300">Uploading photo and verifying attendance</p>
+                  
+                  {/* Animated progress steps */}
+                  <div className="flex justify-center space-x-2 mt-4">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-gray-300">Photo captured</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                      <span className="text-xs text-gray-300">Uploading...</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      <span className="text-xs text-gray-400">Verifying...</span>
+                    </div>
+                  </div>
+                  
+                  {/* Progress bar */}
+                  <div className="w-64 h-2 bg-gray-700 rounded-full mt-4 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-full animate-pulse" 
+                      style={{ 
+                        width: '75%',
+                        animation: 'progressShimmer 2s ease-in-out infinite'
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <video
             ref={videoRef}
             autoPlay
             playsInline
             muted
-            className="w-full h-64 object-cover"
+            className={`w-full h-64 object-cover transition-all duration-300 ${isUploading ? 'blur-sm scale-95' : 'blur-0 scale-100'}`}
             onLoadedMetadata={() => setIsLoading(false)}
           />
           
           <canvas ref={canvasRef} className="hidden" />
+          
+          {/* Success Animation */}
+          {showSuccess && !isUploading && (
+            <div className="absolute inset-0 bg-green-500 bg-opacity-20 flex items-center justify-center z-10">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p className="text-green-700 font-semibold">Photo Captured Successfully!</p>
+                <p className="text-green-600 text-sm">Processing your {mode === 'checkin' ? 'check-in' : 'check-out'}...</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Controls */}
@@ -171,23 +254,34 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode 
           <div className="flex gap-3">
             <button
               onClick={retakePhoto}
-              className="flex-1 flex items-center justify-center gap-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+              disabled={isUploading}
+              className="flex-1 flex items-center justify-center gap-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FiRotateCw className="h-4 w-4" />
               Retake
             </button>
             <button
               onClick={capturePhoto}
-              disabled={isLoading}
-              className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading || isUploading}
+              className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95"
             >
-              <FiCamera className="h-4 w-4" />
-              Capture
+              {isUploading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Uploading...
+                </>
+                              ) : (
+                  <>
+                    <FiCamera className={`h-4 w-4 ${!isLoading ? 'animate-pulse' : ''}`} />
+                    Capture
+                  </>
+                )}
             </button>
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 };
 

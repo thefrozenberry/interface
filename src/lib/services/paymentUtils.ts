@@ -1,6 +1,6 @@
 // Payment API utilities for Next.js frontend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://swrzee.in';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://swrzee.in/api';
 
 export interface Payment {
   _id: string;
@@ -89,7 +89,7 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     ...options,
   };
 
-  const response = await fetch(`${API_BASE_URL}/api${endpoint}`, config);
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));

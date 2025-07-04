@@ -958,6 +958,7 @@ export default function Dashboard() {
           mode={cameraMode}
           onCapture={handlePhotoCapture}
           onClose={handleCameraClose}
+          isUploading={isCheckingIn || isCheckingOut}
         />
       )}
 
