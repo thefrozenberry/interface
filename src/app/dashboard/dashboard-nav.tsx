@@ -63,13 +63,25 @@ export function DashboardNav({ onMobileClose }: DashboardNavProps) {
       localStorage.removeItem('user');
       localStorage.removeItem('tokens');
       
+      // Close mobile menu before redirecting
+      if (onMobileClose) {
+        onMobileClose();
+      }
+      
       // Redirect to home page for fresh start
       router.replace('/');
     }
   };
 
+  const handleNavigation = (href: string) => {
+    // Close mobile menu before navigation
+    if (onMobileClose) {
+      onMobileClose();
+    }
+  };
+
   return (
-    <nav className="w-64 bg-white border-r border-gray-100 h-full overflow-y-auto fixed md:static">
+    <nav className="w-64 bg-white border-r border-gray-100 h-full overflow-y-auto">
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
         <h3 className="text-lg font-semibold text-gray-900">Menu</h3>
@@ -93,7 +105,7 @@ export function DashboardNav({ onMobileClose }: DashboardNavProps) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  onClick={onMobileClose}
+                  onClick={() => handleNavigation(item.href)}
                   className={`flex items-center px-4 py-4 md:py-3 text-sm rounded-lg transition-all duration-200 ${
                     isActive
                       ? "bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 font-medium"

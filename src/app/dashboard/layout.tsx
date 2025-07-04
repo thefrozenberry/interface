@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { DashboardNav } from "./dashboard-nav";
 import { FiMenu, FiX } from "react-icons/fi";
 
@@ -14,11 +14,17 @@ export default function DashboardLayout({
   children: ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [userInitials, setUserInitials] = useState("JS");
   const [userImage, setUserImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
   
   useEffect(() => {
     // Check if we're in the browser environment
@@ -77,7 +83,7 @@ export default function DashboardLayout({
     }
   }, [router]);
   
-  // Add keyboard event listener for mobile menu
+  // Handle keyboard and click outside events for mobile menu
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isMobileMenuOpen) {
@@ -85,10 +91,27 @@ export default function DashboardLayout({
       }
     };
     
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.querySelector('.dashboard-sidebar');
+      const menuButton = document.querySelector('.mobile-menu-button');
+      
+      if (
+        isMobileMenuOpen &&
+        sidebar &&
+        !sidebar.contains(event.target as Node) &&
+        menuButton &&
+        !menuButton.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    
     document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
     
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isMobileMenuOpen]);
   
@@ -118,9 +141,11 @@ export default function DashboardLayout({
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 mr-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-105 active:scale-95 relative"
+              className="mobile-menu-button md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 mr-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-105 active:scale-95 relative"
               aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
             >
+              <span className="sr-only">Toggle menu</span>
               {isMobileMenuOpen ? (
                 <FiX className="h-5 w-5 transition-transform duration-200" />
               ) : (
@@ -162,17 +187,22 @@ export default function DashboardLayout({
 
       <div className="flex pt-16 min-h-screen">
         {/* Mobile Sidebar Overlay */}
-        {isMobileMenuOpen && (
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-        )}
+        <div 
+          className={`fixed inset-0 bg-black transition-opacity duration-300 md:hidden ${
+            isMobileMenuOpen 
+              ? 'opacity-50 pointer-events-auto' 
+              : 'opacity-0 pointer-events-none'
+          }`}
+          aria-hidden="true"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
 
         {/* Sidebar - Fixed on desktop, overlay on mobile */}
-        <aside className={`dashboard-sidebar fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 transform transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 md:relative md:top-0 md:flex-shrink-0 md:static`}>
+        <aside 
+          className={`dashboard-sidebar fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 transform transition-transform duration-300 ease-in-out ${
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          } md:translate-x-0 md:relative md:top-0 md:flex-shrink-0 md:static`}
+        >
           <DashboardNav onMobileClose={() => setIsMobileMenuOpen(false)} />
         </aside>
 
