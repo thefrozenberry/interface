@@ -51,15 +51,36 @@ function CheckStatusContent() {
 
   const merchantOrderId = searchParams.get('merchantOrderId');
   const paymentId = searchParams.get('paymentId');
+  const orderId = searchParams.get('orderId');
+  const urlError = searchParams.get('error');
 
   useEffect(() => {
+    // Handle URL error first
+    if (urlError) {
+      setError("Payment not found. Please check your payment link and try again.");
+      setIsLoading(false);
+      return;
+    }
+
     if (paymentId) {
       checkPaymentStatus(paymentId);
+    } else if (merchantOrderId) {
+      checkPaymentStatusByOrderId(merchantOrderId);
+    } else if (orderId) {
+      checkPaymentStatusByOrderId(orderId);
     } else {
-      setError("Payment ID is required to check status. Please ensure you have a valid payment link.");
-      setIsLoading(false);
+      // Try to get payment ID from localStorage (fallback for PhonePe redirects)
+      const storedPaymentId = localStorage.getItem('pendingPaymentId');
+      if (storedPaymentId) {
+        checkPaymentStatus(storedPaymentId);
+        // Clear the stored payment ID after using it
+        localStorage.removeItem('pendingPaymentId');
+      } else {
+        setError("Payment ID is required to check status. Please ensure you have a valid payment link.");
+        setIsLoading(false);
+      }
     }
-  }, [paymentId]);
+  }, [paymentId, merchantOrderId, orderId, urlError]);
 
   const checkPaymentStatus = async (paymentId: string) => {
     try {
@@ -102,6 +123,60 @@ function CheckStatusContent() {
       }
     } catch (error) {
       console.error('Error checking payment status:', error);
+      
+      // Handle different types of errors
+      if (error instanceof SyntaxError) {
+        setError('Invalid response from server. Please try again later.');
+      } else if (error instanceof TypeError && error.message.includes('fetch')) {
+        setError('Network error. Please check your internet connection and try again.');
+      } else {
+        setError(error instanceof Error ? error.message : 'Failed to check payment status');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const checkPaymentStatusByOrderId = async (orderId: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      console.log('Checking payment status for Order ID:', orderId);
+      console.log('API URL:', `${API_BASE_URL}/payments/status/order/${orderId}`);
+
+      const response = await fetch(`${API_BASE_URL}/payments/status/order/${orderId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Response status:', response.status);
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        // Handle non-JSON response
+        const textResponse = await response.text();
+        console.error('Non-JSON response received:', textResponse);
+        throw new Error(`Server returned non-JSON response. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('API response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.message || `Request failed with status ${response.status}`);
+      }
+
+      if (data.success) {
+        setPaymentStatus(data.data);
+      } else {
+        throw new Error(data.message || 'Payment status check failed');
+      }
+    } catch (error) {
+      console.error('Error checking payment status by order ID:', error);
       
       // Handle different types of errors
       if (error instanceof SyntaxError) {
@@ -179,6 +254,16 @@ function CheckStatusContent() {
   const handleRetry = () => {
     if (paymentId) {
       checkPaymentStatus(paymentId);
+    } else if (merchantOrderId) {
+      checkPaymentStatusByOrderId(merchantOrderId);
+    } else if (orderId) {
+      checkPaymentStatusByOrderId(orderId);
+    } else {
+      // Try localStorage fallback
+      const storedPaymentId = localStorage.getItem('pendingPaymentId');
+      if (storedPaymentId) {
+        checkPaymentStatus(storedPaymentId);
+      }
     }
   };
 
@@ -202,9 +287,11 @@ function CheckStatusContent() {
             <p className="mt-2 text-sm text-gray-600 text-center">
               Please wait while we verify your payment...
             </p>
-            {paymentId && (
+            {(paymentId || merchantOrderId || orderId) && (
               <p className="mt-2 text-xs text-gray-500 text-center">
-                Payment ID: {paymentId}
+                {paymentId && `Payment ID: ${paymentId}`}
+                {merchantOrderId && `Order ID: ${merchantOrderId}`}
+                {orderId && `Order ID: ${orderId}`}
               </p>
             )}
           </div>
