@@ -68,7 +68,7 @@ export default function ProfilePage() {
         const { accessToken } = JSON.parse(storedTokens);
         
         // Call the profile API
-        const response = await fetch(`${API_BASE_URL}/api/users/profile`, {
+        const response = await fetch(`${API_BASE_URL}/users/profile`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

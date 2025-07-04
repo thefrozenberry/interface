@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FiCheckCircle, FiXCircle, FiClock, FiAlertCircle, FiRefreshCw, FiDownload, FiArrowLeft } from "react-icons/fi";
 import PaymentReceipt from "@/components/PaymentReceipt";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://swrzee.ondust.com/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://swrzee.in';
 
 interface PaymentStatus {
   _id: string;

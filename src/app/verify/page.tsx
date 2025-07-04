@@ -54,7 +54,7 @@ function VerifyPageContent() {
     setVerificationError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/verify-registration-otp`, {
+      const response = await fetch(`${API_BASE_URL}/auth/verify-registration-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +108,7 @@ function VerifyPageContent() {
 
     try {
       // Call the registration API again to resend OTP
-      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -135,7 +135,7 @@ export default function ProfileCompletionPage() {
       };
       
       // Call the complete profile API
-      const response = await fetch(`${API_BASE_URL}/api/auth/complete-profile`, {
+      const response = await fetch(`${API_BASE_URL}/auth/complete-profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

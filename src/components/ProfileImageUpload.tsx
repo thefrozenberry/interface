@@ -73,7 +73,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
       
       const response = await axios.put(
-        `${API_BASE_URL}/api/users/profile/image`,
+        `${API_BASE_URL}/users/profile/image`,
         { imageUrl, cloudinaryId },
         {
           headers: {

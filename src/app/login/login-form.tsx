@@ -52,7 +52,7 @@ export function LoginForm() {
     
     try {
       // Call the login API to send OTP
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export function LoginForm() {
 
     try {
       // Call the verify OTP API
-      const response = await fetch(`${API_BASE_URL}/api/auth/verify-login-otp`, {
+      const response = await fetch(`${API_BASE_URL}/auth/verify-login-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -149,7 +149,7 @@ export function LoginForm() {
 
     try {
       // Call the login API again to resend OTP
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

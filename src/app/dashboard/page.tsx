@@ -229,11 +229,11 @@ export default function Dashboard() {
       
       try {
         // Fetch user profile
-        const profileData = await fetchWithAuth(`${API_BASE_URL}/api/users/profile`);
+        const profileData = await fetchWithAuth(`${API_BASE_URL}/users/profile`);
         setUserProfile(profileData.data.user);
         
         // Fetch attendance stats from the new API
-        const statsData = await fetchWithAuth(`${API_BASE_URL}/api/attendance/stats`);
+        const statsData = await fetchWithAuth(`${API_BASE_URL}/attendance/stats`);
         console.log('Dashboard attendance stats response:', statsData.data);
         setUserProfile(prev => prev ? { ...prev, attendanceStats: statsData.data } : null);
         
@@ -271,7 +271,7 @@ export default function Dashboard() {
       
       try {
         // Use our fetchWithAuth helper
-        const data = await fetchWithAuth(`${API_BASE_URL}/api/services/active?category=Course`);
+        const data = await fetchWithAuth(`${API_BASE_URL}/services/active?category=Course`);
         
         // Store courses data from the correct response structure
         setCourses(data.data || []);
@@ -294,7 +294,7 @@ export default function Dashboard() {
       
       try {
         // Use our fetchWithAuth helper
-        const data = await fetchWithAuth(`${API_BASE_URL}/api/users/batch`);
+        const data = await fetchWithAuth(`${API_BASE_URL}/users/batch`);
         
         // Store batch data if available
         if (data.success && data.data.batch) {
@@ -334,7 +334,7 @@ export default function Dashboard() {
         return;
       }
 
-      const endpoint = cameraMode === 'checkin' ? '/api/attendance/check-in' : '/api/attendance/check-out';
+      const endpoint = cameraMode === 'checkin' ? '/attendance/check-in' : '/attendance/check-out';
       const setIsLoading = cameraMode === 'checkin' ? setIsCheckingIn : setIsCheckingOut;
       
       setIsLoading(true);
@@ -428,7 +428,7 @@ export default function Dashboard() {
         description: "Course fee payment"
       };
 
-      const response = await fetchWithAuth(`${API_BASE_URL}/api/payments/initiate`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/payments/initiate`, {
         method: 'POST',
         body: JSON.stringify(paymentData)
       });
@@ -485,7 +485,7 @@ export default function Dashboard() {
   // Verify payment
   const verifyPayment = async (merchantOrderId: string) => {
     try {
-      const response = await fetchWithAuth(`${API_BASE_URL}/api/payments/verify`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/payments/verify`, {
         method: 'POST',
         body: JSON.stringify({
           merchantOrderId: merchantOrderId

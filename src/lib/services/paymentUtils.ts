@@ -1,6 +1,6 @@
 // Payment API utilities for Next.js frontend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://swrzee.ondust.com/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://swrzee.in';
 
 export interface Payment {
   _id: string;
@@ -89,7 +89,7 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     ...options,
   };
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+  const response = await fetch(`${API_BASE_URL}/api${endpoint}`, config);
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -129,7 +129,7 @@ export const getPaymentReceiptFile = async (paymentId: string): Promise<Blob> =>
   const token = getAccessToken();
   if (!token) throw new Error('No access token found');
   
-  const response = await fetch(`${API_BASE_URL}/payments/${paymentId}/receipt/file`, {
+  const response = await fetch(`${API_BASE_URL}/api/payments/${paymentId}/receipt/file`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

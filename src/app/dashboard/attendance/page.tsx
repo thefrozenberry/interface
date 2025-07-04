@@ -157,7 +157,7 @@ export default function AttendancePage() {
         const { accessToken } = JSON.parse(storedTokens);
         
         // Fetch attendance stats from the new API
-        const statsResponse = await fetch(`${API_BASE_URL}/api/attendance/stats`, {
+        const statsResponse = await fetch(`${API_BASE_URL}/attendance/stats`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -190,7 +190,7 @@ export default function AttendancePage() {
         setAttendanceStats(statsData.data);
         
         // Fetch user profile for display purposes
-        const profileResponse = await fetch(`${API_BASE_URL}/api/users/profile`, {
+        const profileResponse = await fetch(`${API_BASE_URL}/users/profile`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -273,7 +273,7 @@ export default function AttendancePage() {
       const { accessToken } = JSON.parse(storedTokens);
       
       // Fetch today's attendance with authorization header
-      const response = await fetch(`${API_BASE_URL}/api/attendance/me/today`, {
+      const response = await fetch(`${API_BASE_URL}/attendance/me/today`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -327,7 +327,7 @@ export default function AttendancePage() {
       const { accessToken } = JSON.parse(storedTokens);
       
       // Call the recalculate endpoint
-      const response = await fetch(`${API_BASE_URL}/api/attendance/stats?recalculate=true`, {
+      const response = await fetch(`${API_BASE_URL}/attendance/stats?recalculate=true`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -343,7 +343,7 @@ export default function AttendancePage() {
       }
 
       // Refresh the attendance stats after recalculation
-      const statsResponse = await fetch(`${API_BASE_URL}/api/attendance/stats`, {
+      const statsResponse = await fetch(`${API_BASE_URL}/attendance/stats`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

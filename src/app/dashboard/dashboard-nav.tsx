@@ -44,7 +44,7 @@ export function DashboardNav({ onMobileClose }: DashboardNavProps) {
         
         // Call logout API
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-        await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
