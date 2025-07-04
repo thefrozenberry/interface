@@ -88,13 +88,29 @@ function CheckStatusContent() {
       setError(null);
 
       console.log('Checking payment status for ID:', paymentId);
-      console.log('API URL:', `${API_BASE_URL}/payments/${paymentId}`);
+      console.log('API URL:', `${API_BASE_URL}/api/payments/status/${paymentId}`);
 
-      const response = await fetch(`${API_BASE_URL}/payments/${paymentId}`, {
+      // Get tokens from localStorage
+      const storedTokens = localStorage.getItem('tokens');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Add authorization header if token exists
+      if (storedTokens) {
+        try {
+          const { accessToken } = JSON.parse(storedTokens);
+          if (accessToken) {
+            headers['Authorization'] = `Bearer ${accessToken}`;
+          }
+        } catch (e) {
+          console.warn('Error parsing stored tokens:', e);
+        }
+      }
+
+      const response = await fetch(`${API_BASE_URL}/payments/status/${paymentId}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       console.log('Response status:', response.status);
@@ -143,13 +159,29 @@ function CheckStatusContent() {
       setError(null);
 
       console.log('Checking payment status for Order ID:', orderId);
-      console.log('API URL:', `${API_BASE_URL}/payments/status/order/${orderId}`);
+      console.log('API URL:', `${API_BASE_URL}/api/payments/status/order/${orderId}`);
 
-      const response = await fetch(`${API_BASE_URL}/payments/status/order/${orderId}`, {
+      // Get tokens from localStorage
+      const storedTokens = localStorage.getItem('tokens');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Add authorization header if token exists
+      if (storedTokens) {
+        try {
+          const { accessToken } = JSON.parse(storedTokens);
+          if (accessToken) {
+            headers['Authorization'] = `Bearer ${accessToken}`;
+          }
+        } catch (e) {
+          console.warn('Error parsing stored tokens:', e);
+        }
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/payments/status/order/${orderId}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       console.log('Response status:', response.status);
