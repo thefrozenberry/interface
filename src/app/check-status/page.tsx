@@ -8,19 +8,7 @@ import PaymentReceipt from "@/components/PaymentReceipt";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://swrzee.in';
 
 interface PaymentStatus {
-  _id: string;
-  userId: {
-    _id: string;
-    name: string;
-    email: string;
-    phone?: string;
-  };
-  batchId: {
-    _id: string;
-    name: string;
-    startDate?: string;
-    endDate?: string;
-  };
+  paymentId: string;
   merchantOrderId: string;
   phonepeOrderId?: string;
   amount: number;
@@ -37,8 +25,18 @@ interface PaymentStatus {
   description?: string;
   approvedBy?: string;
   metadata?: { [key: string]: any };
-  createdAt: string;
-  updatedAt: string;
+  user?: {
+    _id: string;
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  batch?: {
+    _id: string;
+    name: string;
+    startDate?: string;
+    endDate?: string;
+  };
 }
 
 function CheckStatusContent() {
@@ -396,7 +394,7 @@ function CheckStatusContent() {
               {getStatusMessage(paymentStatus.status)}
             </h1>
             <p className="mt-2 text-gray-600">
-              Payment ID: {paymentStatus._id}
+              Payment ID: {paymentStatus.paymentId}
             </p>
             <span className={`mt-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(paymentStatus.status)}`}>
               {paymentStatus.status.toUpperCase()}
@@ -449,15 +447,15 @@ function CheckStatusContent() {
               <div className="space-y-2">
                 <div>
                   <span className="text-sm text-gray-600">Name:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.userId.name}</p>
+                  <p className="font-medium text-gray-900">{paymentStatus.user?.name || 'Not available'}</p>
                 </div>
                 <div>
                   <span className="text-sm text-gray-600">Email:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.userId.email}</p>
+                  <p className="font-medium text-gray-900">{paymentStatus.user?.email || 'Not available'}</p>
                 </div>
                 <div>
                   <span className="text-sm text-gray-600">Phone:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.userId.phone ? paymentStatus.userId.phone : 'Not provided'}</p>
+                  <p className="font-medium text-gray-900">{paymentStatus.user?.phone || 'Not provided'}</p>
                 </div>
               </div>
             </div>
@@ -468,13 +466,13 @@ function CheckStatusContent() {
               <div className="space-y-2">
                 <div>
                   <span className="text-sm text-gray-600">Batch Name:</span>
-                  <p className="font-medium text-gray-900">{paymentStatus.batchId.name}</p>
+                  <p className="font-medium text-gray-900">{paymentStatus.batch?.name || 'Not available'}</p>
                 </div>
                 <div>
                   <span className="text-sm text-gray-600">Duration:</span>
                   <p className="font-medium text-gray-900">
-                    {paymentStatus.batchId.startDate && paymentStatus.batchId.endDate 
-                      ? `${new Date(paymentStatus.batchId.startDate).toLocaleDateString()} - ${new Date(paymentStatus.batchId.endDate).toLocaleDateString()}`
+                    {paymentStatus.batch?.startDate && paymentStatus.batch?.endDate 
+                      ? `${new Date(paymentStatus.batch.startDate).toLocaleDateString()} - ${new Date(paymentStatus.batch.endDate).toLocaleDateString()}`
                       : 'Duration not specified'
                     }
                   </p>
@@ -535,7 +533,7 @@ function CheckStatusContent() {
       {/* Payment Receipt Modal */}
       {showReceipt && paymentStatus && (
         <PaymentReceipt
-          paymentId={paymentStatus._id}
+          paymentId={paymentStatus.paymentId}
           onClose={() => setShowReceipt(false)}
         />
       )}
