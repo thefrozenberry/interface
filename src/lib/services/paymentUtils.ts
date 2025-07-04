@@ -129,18 +129,45 @@ export const getPaymentReceiptFile = async (paymentId: string): Promise<Blob> =>
   const token = getAccessToken();
   if (!token) throw new Error('No access token found');
   
-  const response = await fetch(`${API_BASE_URL}/api/payments/${paymentId}/receipt/file`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+  try {
+    // First try the direct file endpoint
+    const response = await fetch(`${API_BASE_URL}/payments/${paymentId}/receipt/file`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    if (response.ok) {
+      return response.blob();
+    }
+  } catch (error) {
+    console.warn('Direct file endpoint failed, trying receipt URL:', error);
   }
   
-  return response.blob();
+  // Fallback: get receipt URL and fetch the file
+  try {
+    const receiptUrl = await getPaymentReceiptUrl(paymentId);
+    
+    // If the receipt URL is a relative path, make it absolute
+    const fullUrl = receiptUrl.startsWith('http') 
+      ? receiptUrl 
+      : `${API_BASE_URL}${receiptUrl}`;
+    
+    const response = await fetch(fullUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return response.blob();
+  } catch (error) {
+    console.error('Error fetching receipt file:', error);
+    throw new Error(`Failed to fetch receipt file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 };
 
 // Verify payment status

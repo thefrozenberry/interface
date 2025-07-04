@@ -124,3 +124,57 @@
     overflow-x: hidden;
   }
 }
+
+/* Dashboard Layout Fixes */
+@layer components {
+  /* Ensure sidebar stays fixed on desktop */
+  @media (min-width: 768px) {
+    .dashboard-sidebar {
+      position: fixed !important;
+      left: 0 !important;
+      top: 4rem !important;
+      height: calc(100vh - 4rem) !important;
+      width: 16rem !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    
+    .dashboard-main {
+      margin-left: 16rem !important;
+      width: calc(100% - 16rem) !important;
+      padding-right: 1.5rem !important;
+    }
+    
+    .dashboard-main > div {
+      padding-right: 1.5rem !important;
+    }
+  }
+  
+  /* Prevent any movement on desktop */
+  @media (min-width: 768px) {
+    .dashboard-container {
+      overflow-x: hidden;
+    }
+  }
+  
+  /* Additional spacing for larger screens */
+  @media (min-width: 1024px) {
+    .dashboard-main {
+      padding-right: 2rem !important;
+    }
+    
+    .dashboard-main > div {
+      padding-right: 2rem !important;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .dashboard-main {
+      padding-right: 2.5rem !important;
+    }
+    
+    .dashboard-main > div {
+      padding-right: 2.5rem !important;
+    }
+  }
+}

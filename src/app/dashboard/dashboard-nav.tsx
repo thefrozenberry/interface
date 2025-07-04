@@ -69,7 +69,7 @@ export function DashboardNav({ onMobileClose }: DashboardNavProps) {
   };
 
   return (
-    <nav className="w-64 bg-white border-r border-gray-100 h-full overflow-y-auto">
+    <nav className="w-64 bg-white border-r border-gray-100 h-full overflow-y-auto fixed md:static">
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
         <h3 className="text-lg font-semibold text-gray-900">Menu</h3>

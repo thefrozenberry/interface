@@ -110,7 +110,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dashboard-container">
       {/* Top Navigation - Fixed Position */}
       <header className="bg-white border-b border-gray-100 fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center justify-between h-16 px-4 md:px-6 lg:px-10 w-full max-w-[1600px] mx-auto">
@@ -170,16 +170,16 @@ export default function DashboardLayout({
         )}
 
         {/* Sidebar - Fixed on desktop, overlay on mobile */}
-        <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 transform transition-transform duration-300 ease-in-out ${
+        <aside className={`dashboard-sidebar fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 transform transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 md:relative md:top-0 md:flex-shrink-0`}>
+        } md:translate-x-0 md:relative md:top-0 md:flex-shrink-0 md:static`}>
           <DashboardNav onMobileClose={() => setIsMobileMenuOpen(false)} />
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 w-full md:w-auto md:ml-0">
-          <div className="p-4 md:p-6 lg:p-10">
-            <div className="bg-white rounded-xl border border-gray-100 min-h-[calc(100vh-8rem)]">
+        <main className="dashboard-main flex-1 w-full md:ml-64">
+          <div className="p-4 md:p-6 lg:p-8 xl:p-10 pr-4 md:pr-6 lg:pr-8 xl:pr-10">
+            <div className="bg-white rounded-xl border border-gray-100 min-h-[calc(100vh-8rem)] p-4 md:p-6 lg:p-8">
               {children}
             </div>
           </div>

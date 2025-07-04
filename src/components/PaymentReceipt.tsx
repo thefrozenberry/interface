@@ -203,48 +203,12 @@ const PaymentReceipt: React.FC<PaymentReceiptProps> = ({ paymentId, onClose }) =
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Customer Information</h3>
               <div className="space-y-3">
                 <div>
-                  <span className="text-sm font-medium text-gray-500">Name:</span>
-                  <p className="text-sm text-gray-900">{payment.userId.name}</p>
-                </div>
-                <div>
                   <span className="text-sm font-medium text-gray-500">Email:</span>
                   <p className="text-sm text-gray-900">{payment.userId.email}</p>
                 </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Phone:</span>
-                  <p className="text-sm text-gray-900">{payment.userId.phone || 'N/A'}</p>
-                </div>
-              </div>
-
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 mt-6">Batch Information</h3>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Batch Name:</span>
-                  <p className="text-sm text-gray-900">{payment.batchId.name}</p>
-                </div>
-                {payment.batchId.startDate && (
-                  <div>
-                    <span className="text-sm font-medium text-gray-500">Start Date:</span>
-                    <p className="text-sm text-gray-900">{formatDate(payment.batchId.startDate)}</p>
-                  </div>
-                )}
-                {payment.batchId.endDate && (
-                  <div>
-                    <span className="text-sm font-medium text-gray-500">End Date:</span>
-                    <p className="text-sm text-gray-900">{formatDate(payment.batchId.endDate)}</p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
-
-          {/* Description */}
-          {payment.description && (
-            <div className="mb-6">
-              <span className="text-sm font-medium text-gray-500">Description:</span>
-              <p className="text-sm text-gray-900 mt-1">{payment.description}</p>
-            </div>
-          )}
 
           {/* Failure Reason */}
           {payment.failureReason && (

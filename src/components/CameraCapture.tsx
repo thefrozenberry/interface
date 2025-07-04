@@ -139,15 +139,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode,
   }
 
   return (
-    <>
-      <style jsx>{`
-        @keyframes progressShimmer {
-          0% { opacity: 0.7; }
-          50% { opacity: 1; }
-          100% { opacity: 0.7; }
-        }
-      `}</style>
-      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg overflow-hidden max-w-md mx-4">
         {/* Header */}
         <div className="bg-gray-50 px-4 py-3 border-b">
@@ -176,48 +168,11 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode,
           )}
           
           {isUploading && (
-            <div className="absolute inset-0 bg-gray-900 bg-opacity-95 flex items-center justify-center z-10">
+            <div className="absolute inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-10">
               <div className="text-white text-center">
-                <div className="relative mb-6">
-                  {/* Main spinning loader */}
-                  <div className="w-20 h-20 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                  {/* Pulsing ring effect */}
-                  <div className="absolute inset-0 w-20 h-20 border-4 border-blue-200 rounded-full animate-ping opacity-50"></div>
-                  {/* Inner pulsing ring */}
-                  <div className="absolute inset-2 w-16 h-16 border-2 border-blue-300 rounded-full animate-ping opacity-30" style={{ animationDelay: '0.5s' }}></div>
-                </div>
-                
-                <div className="space-y-3">
-                  <p className="text-xl font-semibold">Processing {mode === 'checkin' ? 'Check-in' : 'Check-out'}...</p>
-                  <p className="text-sm text-gray-300">Uploading photo and verifying attendance</p>
-                  
-                  {/* Animated progress steps */}
-                  <div className="flex justify-center space-x-2 mt-4">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-gray-300">Photo captured</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                      <span className="text-xs text-gray-300">Uploading...</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                      <span className="text-xs text-gray-400">Verifying...</span>
-                    </div>
-                  </div>
-                  
-                  {/* Progress bar */}
-                  <div className="w-64 h-2 bg-gray-700 rounded-full mt-4 overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-full animate-pulse" 
-                      style={{ 
-                        width: '75%',
-                        animation: 'progressShimmer 2s ease-in-out infinite'
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                <div className="w-12 h-12 border-3 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-lg font-medium">Processing...</p>
+                <p className="text-sm text-gray-300 mt-1">Please wait</p>
               </div>
             </div>
           )}
@@ -281,7 +236,6 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose, mode,
         </div>
       </div>
     </div>
-    </>
   );
 };
 
