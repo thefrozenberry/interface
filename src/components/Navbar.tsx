@@ -103,7 +103,7 @@ const Navbar = () => {
             </Link>
             
             {/* Corporate Login Link (for admin) */}
-            <Link href="/corporate-login" className="text-gray-700 hover:text-gray-900">
+            <Link href="https://corporate.swrzee.in" className="text-gray-700 hover:text-gray-900">
               Corporate Login
             </Link>
             
@@ -184,7 +184,7 @@ const Navbar = () => {
               </Link>
               
               {/* Mobile Corporate Login Link */}
-              <Link href="/corporate-login" className="block px-3 py-2 text-gray-700">
+              <Link href="https://corporate.swrzee.in" className="block px-3 py-2 text-gray-700">
                 Corporate Login
               </Link>
               
